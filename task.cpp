@@ -12,7 +12,12 @@ private:
     Node* _prev;
     T* _val;
 public:
-    Node() { _next = nullptr; _prev = nullptr; _val = nullptr; }
+    Node()
+    {
+        _next = nullptr;
+        _prev = nullptr;
+        _val = nullptr;
+    }
     Node(Node<T>* prev, Node* next, T const& value)
     {
         this->_prev = prev;
@@ -38,34 +43,39 @@ public:
         this->_next = other._next;
         this->_val = other._val;
     }
-
     ~Node() = default;
     T get_val() const
     {
         return this->_val;
     }
-
     Node* get_prev() const
     {
         return this->_prev;
     }
-
     Node* get_next() const
     {
         return this->_next;
     }
-
     void set_prev(Node* prev)
     {
         this->_prev = prev;
     }
-
     void set_next(Node* next)
     {
         this->_next = next;
     }
-
     void set_val(Node* val)
     {
         this->_val = val;
     }
+};
+
+template <typename T>
+class LinkedList
+{
+private:
+    Node<T>* head_;
+    int size_;
+public:
+
+}
