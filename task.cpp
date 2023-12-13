@@ -150,15 +150,116 @@ public:
         std::swap(this->_head, other._head);
         std::swap(this->_size, other._size);
     }
-    LinkedList<T>& operator=(LinkedList<T> const& other);
-    ~LinkedList();
-    void PushTail(Node<T> const& node);
-    void PushTail(LinkedList<T> const& other);
-    void PushHead(Node<T> const& node);
-    void PushHead(LinkedList<T> const& other);
-    void PopHead();
-    void PopTail();
-    void DeleteNode(T const& value);
+    ~LinkedList() 
+    {
+        if (this->_head != nullptr) {
+            Node<T>* ptr = this->_head;
+            for (int i = 1; i < this->_size; ++i) {
+                ptr = ptr->_next;
+                delete ptr->_prev;
+            }
+            delete ptr;
+        }
+    }
+    void PushTail(Node<T> const& Node)
+    {
+        if (_tail != NULL) {
+            _tail->_next = Node;
+            _head->_prev = Node;
+        }
+        else if (_tail == NULL) {
+            _head = Node;
+        }
+        Node->_next = _head;
+        Node->_prev = _tail;
+        _tail = Node;
+    }
+    void PushTail(LinkedList<T> const& other)
+    {
+        if (other._tail == NULL)
+            throw std::invalid_argument("The list is empty");
+        else if (_tail == NULL) {
+            _head = other._head;
+            _tail = other._tail;
+        }
+        else {
+            other._tail->_next = _head;
+            _head->_prev = other._tail;
+            other._head->_prev = _tail;
+            _tail->_next = other._head;
+            _tail = other._tail;
+        }
+    }
+    void PushHead(Node<T> const& Node)
+    {
+        if (_head != NULL) {
+            _tail->_next = Node;
+            _head->_prev = Node;
+        }
+        else if (_head == NULL) {
+            _tail = Node;
+        }
+        Node->_next = _head;
+        Node->_prev = _tail;
+        _head = Node;
+    }
+    void PushHead(LinkedList<T> const& other)
+    {
+        if (other._head == NULL)
+            throw std::invalid_argument("The list is empty");
+        else if (_head == NULL) {
+            _head = other._head;
+            _tail = other._tail;
+        }
+        else {
+            other._tail->_next = _head;
+            _head->_prev = other._tail;
+            other._head->_prev = _tail;
+            _tail->_next = other._head;
+            _head = other._head;
+        }
+    }
+    void PopHead()
+    {
+        if (_head == NULL)
+            throw std::invalid_argument("The list is empty");
+        else {
+            Node<T>* help = _head;
+            _head = _head->_next;
+            _head->_prev = _tail;
+            _tail->_next = _head;
+            delete help;
+        }
+    }
+    void PopTail()
+    {
+        if (_tail == NULL)
+            throw std::invalid_argument("The list is empty");
+        else {
+            Node<T>* help = _tail;
+            _tail = _tail->_prev;
+            _head->_prev = _tail;
+            _tail->_next = _head;
+            delete help;
+        }
+    }
+    void DeleteNode(T const& value) 
+    {
+        Node<T>* ptr = this->_head;
+        for (int i = 0; i < _size; ++i) {
+            if (ptr->_val == value) {
+                ptr->_prev->_next = ptr->_next;
+                ptr->_next->_prev = ptr->_prev;
+                Node<T>* next = ptr->_next;
+                delete ptr;
+                this->_size--;
+                ptr = next;
+            }
+            else
+                ptr = ptr->_next;
+        }
+    }
     Node<T>& operator[](int index);
     Node<T> operator[](int index) const;
-}
+    LinkedList<T>& operator=(LinkedList<T> const& other);
+};
