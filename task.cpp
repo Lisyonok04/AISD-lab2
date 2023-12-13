@@ -259,7 +259,21 @@ public:
                 ptr = ptr->_next;
         }
     }
-    Node<T>& operator[](int index);
-    Node<T> operator[](int index) const;
-    LinkedList<T>& operator=(LinkedList<T> const& other);
+    Node<T>& operator[](int index)
+    {
+        if (index >= this->_size || index < 0) {
+            throw std::runtime_error("Invalid index");
+        }
+        Node<T>* ptr = this->_head;
+        for (int i = 0; i < index; ++i) {
+            ptr = ptr->_next;
+        }
+        return *ptr;
+    }
+    LinkedList<T>& operator=(LinkedList<T> const& other)
+    {
+        LinkedList<T> help(other);
+        this->Swap(help);
+        return *this;
+    }
 };
