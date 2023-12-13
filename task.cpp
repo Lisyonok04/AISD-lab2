@@ -8,9 +8,9 @@ using namespace std;
 template <typename T>
 class Node {
 private:
-    Node* _next;
-    Node* _prev;
-    T* _val;
+    Node<T>* _next;
+    Node<T>* _prev;
+    T _val;
 public:
     Node()
     {
@@ -48,23 +48,23 @@ public:
     {
         return this->_val;
     }
-    Node* get_prev() const
+    Node<T>* get_prev() const
     {
         return this->_prev;
     }
-    Node* get_next() const
+    Node<T>* get_next() const
     {
         return this->_next;
     }
-    void set_prev(Node* prev)
+    void set_prev(Node<T>* prev)
     {
         this->_prev = prev;
     }
-    void set_next(Node* next)
+    void set_next(Node<T>* next)
     {
         this->_next = next;
     }
-    void set_val(Node* val)
+    void set_val(Node<T> val)
     {
         this->_val = val;
     }
@@ -74,8 +74,8 @@ template <typename T>
 class LinkedList
 {
 private:
-    Node* _head;
-    Node* _tail;
+    Node<T>* _head;
+    Node<T>* _tail;
     int _size;
 public:
     LinkedList() 
@@ -245,9 +245,9 @@ public:
             throw std::invalid_argument("The list is empty");
         else {
             Node<T>* help = _tail;
-            _tail = _tail->_prev;
-            _head->_prev = _tail;
-            _tail->_next = _head;
+            this->_tail = _tail->_prev;
+            this->_head->_prev = this->_tail;
+            this->_tail->_next = this->_head;
             delete help;
         }
     }
@@ -285,6 +285,14 @@ public:
         return *this;
     }
 };
+
+template<class T>
+void PrintList(LinkedList<T> const& list) {
+    for (int i = 0; i < list.GetSize(); ++i) {
+        cout << list[i].get_val() << " ";
+    }
+    cout << endl;
+}
 
 template <class T>
 void sum_num(LinkedList<T>* lhs, LinkedList<T>* rhs) {
@@ -360,8 +368,6 @@ void mul_num(LinkedList<T>* lhs, LinkedList<T>* rhs) {
         for (int i = 0; i < count; i++) {
             t.PushTail(0);
         }
-
-        cout << t << "\n";
         res = sum_num(&res, &t);
         count++;
         rt = rt->get_prev();
