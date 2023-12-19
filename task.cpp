@@ -83,7 +83,50 @@ public:
         t->prev = tail;
         tail = t;
     }
+    void push_tail(const LinkedList& _list) {
+        if (_list.tail == NULL)
+            throw std::invalid_argument("LinkedList::The list is empty");
+        else if (tail == NULL) {
+            head = _list.head;
+            tail = _list.tail;
+        }
+        else {
+            _list.tail->next = head;
+            head->prev = _list.tail;
+            _list.head->prev = tail;
+            tail->next = _list.head;
+            tail = _list.tail;
+        }
+    }
 
+    void push_head(Node<T>* h) {
+        if (head != NULL) {
+            tail->next = h;
+            head->prev = h;
+        }
+        else if (head == NULL) {
+            tail = h;
+        }
+        h->next = head;
+        h->prev = tail;
+        head = h;
+    }
+
+    void push_head(const LinkedList<T>& _list) {
+        if (_list.head == NULL)
+            throw std::invalid_argument("LinkedList::The list is empty");
+        else if (head == NULL) {
+            head = _list.head;
+            tail = _list.tail;
+        }
+        else {
+            _list.tail->next = head;
+            head->prev = _list.tail;
+            _list.head->prev = tail;
+            tail->next = _list.head;
+            head = _list.head;
+        }
+    }
 
 
 template <class T>
@@ -96,11 +139,11 @@ void sum_num(LinkedList<T>* lhs, LinkedList<T>* rhs) {
         int r = *(rt->get_val());
         int l = *(lt->get_val());
         if (r + l + of > 9) {
-            t.PushHead(r + l + of - 10);
+            t.push_head(r + l + of - 10);
             of = 1;
         }
         else {
-            t.PushHead(r + l + of);
+            t.push_head(r + l + of);
             of = 0;
         }
         rt = rt->get_prev();
@@ -109,7 +152,7 @@ void sum_num(LinkedList<T>* lhs, LinkedList<T>* rhs) {
     while (rt != nullptr) {
         int r = *(rt->get_val());
         if (r + of > 9) {
-            t.PushHead(r + of - 10);
+            t.push_head(r + of - 10);
             of = 1;
         }
         else {
