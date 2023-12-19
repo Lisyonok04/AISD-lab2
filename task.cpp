@@ -30,6 +30,62 @@ public:
     Node<T>* get_head() { return head; }
     Node<T>* get_tail() { return tail; }
 
+    LinkedList(const LinkedList<T>& _list) {
+        head = nullptr;
+        tail = nullptr;
+        Node<T>* cur = _list.head;
+        do {
+            Node<T>* node = new Node(cur->value);
+            push_tail(node);
+            cur = cur->next;
+        } while (cur != _list.head);
+    }
+    LinkedList(int size, T from_data, T to_data) {
+        if (size < 0)
+            throw std::invalid_argument("LinkedList::Incorrect size.");
+        else {
+            head = nullptr;
+            tail = nullptr;
+            for (int i = 0; i < size; i++) {
+                T _data = T(0);
+                do {
+                    _data = random_value(from_data, to_data);
+                } while (_data == T(0));
+                T _degree = random_value(from_degree, to_degree);
+                Node<T>* node = new Node(_data, _degree);
+                push_tail(node);
+            }
+        }
+    }
+
+    ~LinkedList() {
+        while (head != tail) {
+            Node<T>* cur = head;
+            head = head->prev;
+            delete cur;
+        }
+        delete tail;
+    }
+
+    void swap(LinkedList<T>& _list) {
+        std::swap(head, _list.head);
+    }
+
+    void push_tail(Node<T>* t) {
+        if (tail != NULL) {
+            tail->next = t;
+            head->prev = t;
+        }
+        else if (tail == NULL) {
+            head = t;
+        }
+        t->next = head;
+        t->prev = tail;
+        tail = t;
+    }
+
+
+
 template <class T>
 void sum_num(LinkedList<T>* lhs, LinkedList<T>* rhs) {
     LinkedList<int> t;
