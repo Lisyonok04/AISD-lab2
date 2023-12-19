@@ -11,11 +11,11 @@ struct Node {
     Node<T>* next;
     Node<T>* prev;
 
-    Node() : value(0), next(nullptr), prev(nullptr) {}
+    Node() : _value(0), next(nullptr), prev(nullptr) {}
     Node(T value) : _value(value), next(nullptr), prev(nullptr) {}
     Node<T>* get_prev() { return prev; }
     Node<T>* get_next() { return next; }
-    T* get_val() { return value; }
+    T* get_val() { return _value; }
 };
 
 template<typename T>
@@ -40,23 +40,7 @@ public:
             cur = cur->next;
         } while (cur != _list.head);
     }
-    LinkedList(int size, T from_data, T to_data) {
-        if (size < 0)
-            throw std::invalid_argument("LinkedList::Incorrect size.");
-        else {
-            head = nullptr;
-            tail = nullptr;
-            for (int i = 0; i < size; i++) {
-                T _data = T(0);
-                do {
-                    _data = random_value(from_data, to_data);
-                } while (_data == T(0));
-                T _degree = random_value(from_degree, to_degree);
-                Node<T>* node = new Node(_data, _degree);
-                push_tail(node);
-            }
-        }
-    }
+
 
     ~LinkedList() {
         while (head != tail) {
@@ -77,12 +61,13 @@ public:
             head->prev = t;
         }
         else if (tail == NULL) {
-            head = t;
+            head = t; 
         }
         t->next = head;
         t->prev = tail;
         tail = t;
     }
+
     void push_tail(const LinkedList& _list) {
         if (_list.tail == NULL)
             throw std::invalid_argument("LinkedList::The list is empty");
@@ -210,7 +195,7 @@ template<typename T>
 ostream& operator<<(ostream& os, LinkedList<T>& _list) {
      Node<T>* cur = _list.get_head();
      do {
-         os << cur->data << endl;
+         os << cur->_value << endl;
          cur = cur->next;
      } while (cur != _list.get_head());
      return os;
@@ -279,15 +264,15 @@ void mul_num(LinkedList<T>* lhs, LinkedList<T>* rhs) {
         Node<int>* lt = lhs->get_tail();
         while (lt != nullptr) {
             int l = *(lt->get_val());
-            t.PushHead((l * r + of) % 10);
+            t.push_head((l * r + of) % 10);
             of = (l * r + of) / 10;
             lt = lt->get_prev();
         }
         if (of != 0) {
-            t.push_ead(of);
+            t.push_head(of);
         }
         for (int i = 0; i < count; i++) {
-            t.push tail(0);
+            t.push_tail(0);
         }
         res = sum_num(&res, &t);
         count++;
