@@ -127,8 +127,94 @@ public:
             head = _list.head;
         }
     }
+    void pop_head() {
+        if (head == NULL)
+            throw std::invalid_argument("LinkedList::The list is empty");
+        else {
+            Node<T>* cur = head;
+            head = head->next;
+            head->prev = tail;
+            tail->next = head;
+            delete cur;
+        }
+    }
 
+    void pop_tail() {
+        if (tail == NULL)
+            throw std::invalid_argument("LinkedList::The list is empty");
+        else {
+            Node<T>* cur = tail;
+            tail = tail->prev;
+            head->prev = tail;
+            tail->next = head;
+            delete cur;
+        }
+    }
 
+    void delete_node(T _data, const int _degree) {
+        if (head == NULL)
+            throw std::invalid_argument("LinkedList::The list is empty");
+        else {
+            Node<T>* cur = head;
+            do {
+                if (_data == cur->data && _degree == cur->degree) {
+                    if (cur == head) {
+                        cur = cur->next;
+                        this->pop_head();
+                    }
+                    else if (cur == tail) {
+                        cur = cur->next;
+                        this->pop_tail();
+                    }
+                    else {
+                        Node<T>* ptr = cur;
+                        cur = cur->next;
+                        cur->prev = ptr->prev;
+                        ptr->prev->next = cur;
+                        delete ptr;
+                    }
+                }
+                else {
+                    cur = cur->next;
+                }
+            } while (cur != head);
+        }
+    }
+    Node<T>* operator[](int _index) const {
+        if (_index < 0 || _index >= count_elem(head))
+            throw std::out_of_range("LinkedList::Incorrect index.");
+        else {
+            Node<T>* cur = head;
+            for (int i = 0; i < _index; i++)
+                cur = cur->next;
+            return cur;
+        }
+    }
+
+    Node<T>* set_node(const T _data, const T _degree, int _index) {
+        if (_index < 0 || _index >= count_elem(head))
+            throw std::out_of_range("LinkedList::Incorrect index.");
+        else {
+            Node<T>* cur = head;
+            for (int i = 0; i < _index; i++)
+                cur = cur->next;
+            cur->data = _data;
+            cur->degree = _degree;
+            return cur;
+        }
+    }
+
+ };
+
+template<typename T>
+ostream& operator<<(ostream& os, LinkedList<T>& _list) {
+     Node<T>* cur = _list.get_head();
+     do {
+         os << cur->data << endl;
+         cur = cur->next;
+     } while (cur != _list.get_head());
+     return os;
+ }
 template <class T>
 void sum_num(LinkedList<T>* lhs, LinkedList<T>* rhs) {
     LinkedList<int> t;
@@ -156,7 +242,7 @@ void sum_num(LinkedList<T>* lhs, LinkedList<T>* rhs) {
             of = 1;
         }
         else {
-            t.PushHead(r + of);
+            t.push_head(r + of);
             of = 0;
         }
         rt = rt->get_prev();
@@ -164,17 +250,17 @@ void sum_num(LinkedList<T>* lhs, LinkedList<T>* rhs) {
     while (lt != nullptr) {
         int l = *(lt->get_val());
         if (l + of > 9) {
-            t.PushHead(l + of - 10);
+            t.push_head(l + of - 10);
             of = 1;
         }
         else {
-            t.PushHead(l + of);
+            t.push_head(l + of);
             of = 0;
         }
         lt = lt->get_prev();
     }
     if (of == 1) {
-        t.PushHead(1);
+        t.push_head(1);
     }
     return t;
 }
@@ -182,7 +268,7 @@ void sum_num(LinkedList<T>* lhs, LinkedList<T>* rhs) {
 template <typename T>
 void mul_num(LinkedList<T>* lhs, LinkedList<T>* rhs) {
     LinkedList<int> res;
-    res.PushHead(0);
+    res.push_head(0);
     Node<int>* rt = rhs->get_tail();
     int count = 0;
     while (rt != nullptr) {
@@ -198,10 +284,10 @@ void mul_num(LinkedList<T>* lhs, LinkedList<T>* rhs) {
             lt = lt->get_prev();
         }
         if (of != 0) {
-            t.PushHead(of);
+            t.push_ead(of);
         }
         for (int i = 0; i < count; i++) {
-            t.PushTail(0);
+            t.push tail(0);
         }
         res = sum_num(&res, &t);
         count++;
