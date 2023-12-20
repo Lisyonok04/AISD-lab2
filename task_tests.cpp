@@ -5,32 +5,23 @@
 
 using namespace std;
 
-/*TEST(Tests, list1) {
-	LinkedList<int> list;
-	Node<int>* a = new Node(1);
-	Node<int>* b = new Node(2);
-	Node<int>* c = new Node(3);
-
-	list.push_head(b);
-	list.push_tail(c);
-	list.push_head(a);
-	cout << list << endl;
-}*/
-
-TEST(Tests, twolist1) {
-	LinkedList<int> list1;
-	LinkedList<int> list2;
-	Node<int>* a = new Node(1);
-	Node<int>* b = new Node(3);
-	Node<int>* c = new Node(5);
-	Node<int>* d = new Node(2);
-	Node<int>* e = new Node(4);
-	Node<int>* f = new Node(6);
-	list1.push_head(a);
-	list1.push_tail(b);
-	list1.push_head(c);
-	list2.push_head(d);
-	list2.push_tail(e);
-	list2.push_head(f);
-	cout << list2 << endl;
+TEST(Tests, list1) {
+    LinkedList<int>num1;
+    Node<int>* a = new Node(1);
+    Node<int>* b = new Node(9);
+    Node<int>* c = new Node(7);
+    num1.push_tail(a);
+    num1.push_tail(b);
+    num1.push_tail(c);
+    cout << num1 << endl;
+    Node<int>* d = new Node(8);
+    Node<int>* e = new Node(0);
+    Node<int>* f = new Node(3);
+    LinkedList<int>num2;
+    num2.push_tail(d);
+    num2.push_tail(e);
+    num2.push_tail(f);
+    cout << num2 << endl;
+    LinkedList<int>res = sum_num(num1, num2);
+    cout << res << endl;
 }
