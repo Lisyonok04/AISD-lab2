@@ -23,21 +23,29 @@ class LinkedList {
 private:
     Node<T>* head;
     Node<T>* tail;
+    int size;
 
 public:
-    LinkedList() : head(nullptr), tail(nullptr) {}
-
+    LinkedList()
+    {
+        head = nullptr;
+        tail = nullptr;
+        size = 0;
+    }
     Node<T>* get_head() { return head; }
     Node<T>* get_tail() { return tail; }
+    int get_size() { return size; }
 
     LinkedList(const LinkedList<T>& _list) {
         head = nullptr;
         tail = nullptr;
+        size = 0;
         Node<T>* cur = _list.head;
         do {
-            Node<T>* node = new Node(cur->value);
+            Node<T>* node = new Node(cur->_value);
             push_tail(node);
             cur = cur->next;
+            size++;
         } while (cur != _list.head);
     }
 
@@ -53,6 +61,7 @@ public:
 
     void swap(LinkedList<T>& _list) {
         std::swap(head, _list.head);
+        std::swap(size, _list.size);
     }
 
     void push_tail(Node<T>* t) {
@@ -68,7 +77,7 @@ public:
         tail = t;
     }
 
-    void push_tail(const LinkedList& _list) {
+    void push_tail(const LinkedList<T>* _list) {
         if (_list.tail == NULL)
             throw std::invalid_argument("LinkedList::The list is empty");
         else if (tail == NULL) {
@@ -95,9 +104,10 @@ public:
         h->next = head;
         h->prev = tail;
         head = h;
+        size++;
     }
 
-    void push_head(const LinkedList<T>& _list) {
+    void push_head(const LinkedList<T>* _list) {
         if (_list.head == NULL)
             throw std::invalid_argument("LinkedList::The list is empty");
         else if (head == NULL) {
@@ -122,6 +132,7 @@ public:
             tail->next = head;
             delete cur;
         }
+        size--;
     }
 
     void pop_tail() {
@@ -134,6 +145,7 @@ public:
             tail->next = head;
             delete cur;
         }
+        size--;
     }
 
     void delete_node(T _data, const int _degree) {
@@ -164,19 +176,25 @@ public:
                 }
             } while (cur != head);
         }
+        size--;
     }
-    Node<T>* operator[](int _index) const {
-        if (_index < 0 || _index >= count_elem(head))
-            throw std::out_of_range("LinkedList::Incorrect index.");
-        else {
-            Node<T>* cur = head;
-            for (int i = 0; i < _index; i++)
-                cur = cur->next;
-            return cur;
+    T operator[](int index) const
+    {
+        int count = 0;
+        Node<T>* tmp = head;
+        while (tmp != nullptr)
+        {
+            if (count == index)
+            {
+                return tmp->_value;
+            }
+            count++;
+            tmp = tmp->next;
         }
+        throw out_of_range("wrong index of list");
     }
 
-    Node<T>* set_node(const T _data, const T _degree, int _index) {
+    Node<T>* set_node(const T _data, int _index) {
         if (_index < 0 || _index >= count_elem(head))
             throw std::out_of_range("LinkedList::Incorrect index.");
         else {
@@ -184,7 +202,6 @@ public:
             for (int i = 0; i < _index; i++)
                 cur = cur->next;
             cur->data = _data;
-            cur->degree = _degree;
             return cur;
         }
     }
@@ -200,83 +217,25 @@ ostream& operator<<(ostream& os, LinkedList<T>& _list) {
      } while (cur != _list.get_head());
      return os;
  }
-template <class T>
-void sum_num(LinkedList<T>* lhs, LinkedList<T>* rhs) {
-    LinkedList<int> t;
-    int of = 0;
-    Node<int>* rt = rhs->get_tail();
-    Node<int>* lt = lhs->get_tail();
-    while (rt != nullptr && lt != nullptr) {
-        int r = *(rt->get_val());
-        int l = *(lt->get_val());
-        if (r + l + of > 9) {
-            t.push_head(r + l + of - 10);
-            of = 1;
-        }
-        else {
-            t.push_head(r + l + of);
-            of = 0;
-        }
-        rt = rt->get_prev();
-        lt = lt->get_prev();
-    }
-    while (rt != nullptr) {
-        int r = *(rt->get_val());
-        if (r + of > 9) {
-            t.push_head(r + of - 10);
-            of = 1;
-        }
-        else {
-            t.push_head(r + of);
-            of = 0;
-        }
-        rt = rt->get_prev();
-    }
-    while (lt != nullptr) {
-        int l = *(lt->get_val());
-        if (l + of > 9) {
-            t.push_head(l + of - 10);
-            of = 1;
-        }
-        else {
-            t.push_head(l + of);
-            of = 0;
-        }
-        lt = lt->get_prev();
-    }
-    if (of == 1) {
-        t.push_head(1);
-    }
-    return t;
-}
 
 template <typename T>
-void mul_num(LinkedList<T>* lhs, LinkedList<T>* rhs) {
-    LinkedList<int> res;
-    res.push_head(0);
-    Node<int>* rt = rhs->get_tail();
-    int count = 0;
-    while (rt != nullptr) {
-        int r = *(rt->get_val());
-        LinkedList<int> t;
+LinkedList<T> sum_num(LinkedList<T> a, LinkedList<T> b) {
+    LinkedList<int> result;
+    int carry = 0;
+    int i = a.get_size() - 1;
+    int j = b.get_size() - 1;
+    while (i >= 0 || j >= 0 || carry)
+    {
+        int digit1 = i >= 0 ? a[i] : 0;
+        int digit2 = j >= 0 ? b[j] : 0;
+        int sum = digit1 + digit2 + carry;
+        carry = sum / 10;
+        Node<int>* x = new Node(sum % 10);
+        result.push_head(x);
+        if (i >= 0) --i;
+        if (j >= 0) --j;
 
-        int of = 0;
-        Node<int>* lt = lhs->get_tail();
-        while (lt != nullptr) {
-            int l = *(lt->get_val());
-            t.push_head((l * r + of) % 10);
-            of = (l * r + of) / 10;
-            lt = lt->get_prev();
-        }
-        if (of != 0) {
-            t.push_head(of);
-        }
-        for (int i = 0; i < count; i++) {
-            t.push_tail(0);
-        }
-        res = sum_num(&res, &t);
-        count++;
-        rt = rt->get_prev();
+
     }
-    return res;
+    return result;
 }
