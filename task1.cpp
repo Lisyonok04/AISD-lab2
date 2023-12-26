@@ -23,11 +23,6 @@ public:
 
 
     void addStudent(Student* student) {
-        /*Student* newStudent = new Student;
-        newStudent->lastName = lastName;
-        newStudent->firstName = firstName;
-        newStudent->course = course;
-        newStudent->averageGrade = averageGrade;*/
 
         if (head == nullptr) {
             head = student;
@@ -177,22 +172,3 @@ public:
         } while (current != head);
     }
 };
-
-/*int main() {
-    LinkedList list;
-
-    list.addStudent("Smith", "John", 3, 4.5);
-    list.addStudent("Johnson", "Anna", 4, 2.8);
-    list.addStudent("Williams", "David", 2, 3.2);
-    list.addStudent("Brown", "Emily", 1, 2.9);
-
-    cout << "Students before deletion: " << endl;
-    list.displayStudents();
-
-    list.deleteLowGrades();
-
-    cout << endl << "Students after deletion: " << endl;
-    list.displayStudents();
-
-    return 0;
-}*/
