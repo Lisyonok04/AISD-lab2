@@ -17,8 +17,9 @@ class LinkedList {
 private:
     Student* head;
     Student* tail;
+    int size;
 public:
-    LinkedList() : head(nullptr), tail(nullptr) {}
+    LinkedList() : size(0), head(nullptr), tail(nullptr) {}
 
 
     void addStudent(Student* student) {
@@ -52,6 +53,96 @@ public:
         delete tail;
     }*/
 
+    void swap(LinkedList& _list) {
+        std::swap(head, _list.head);
+        std::swap(size, _list.size);
+    }
+
+    void push_tail(Student* t) {
+        if (tail != NULL) {
+            tail->next = t;
+            head->prev = t;
+        }
+        else if (tail == NULL) {
+            head = t;
+        }
+        t->next = head;
+        t->prev = tail;
+        tail = t;
+    }
+
+    void push_tail(const LinkedList* _list) {
+        if (_list->tail == NULL)
+            throw std::invalid_argument("LinkedList::The list is empty");
+        else if (tail == NULL) {
+            head = _list->head;
+            tail = _list->tail;
+        }
+        else {
+            _list->tail->next = head;
+            head->prev = _list->tail;
+            _list->head->prev = tail;
+            tail->next = _list->head;
+            tail = _list->tail;
+        }
+    }
+
+    void push_head(Student* h) {
+        if (head != NULL) {
+            tail->next = h;
+            head->prev = h;
+        }
+        else if (head == NULL) {
+            tail = h;
+        }
+        h->next = head;
+        h->prev = tail;
+        head = h;
+        size++;
+    }
+
+    void push_head(const LinkedList* _list) {
+        if (_list->head == NULL)
+            throw std::invalid_argument("LinkedList::The list is empty");
+        else if (head == NULL) {
+            head = _list->head;
+            tail = _list->tail;
+        }
+        else {
+            _list->tail->next = head;
+            head->prev = _list->tail;
+            _list->head->prev = tail;
+            tail->next = _list->head;
+            head = _list->head;
+        }
+    }
+    void pop_head() {
+        if (head == NULL)
+            throw std::invalid_argument("LinkedList::The list is empty");
+        else {
+            Student* cur = head;
+            head = head->next;
+            head->prev = tail;
+            tail->next = head;
+            delete cur;
+        }
+        size--;
+    }
+
+    void pop_tail() {
+        if (tail == NULL)
+            throw std::invalid_argument("LinkedList::The list is empty");
+        else {
+            Student* cur = tail;
+            tail = tail->prev;
+            head->prev = tail;
+            tail->next = head;
+            delete cur;
+        }
+        size--;
+    }
+
+    
     void deleteLowGrades() {
         if (head == nullptr) {
             return;
