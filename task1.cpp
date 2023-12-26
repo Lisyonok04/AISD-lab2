@@ -11,7 +11,8 @@ struct Student {
     Student() : lastName(), firstName(), course(0), averageGrade(0), next(nullptr), prev(nullptr) {}
     Student(string last_Name, string first_Name, int _course, float average_Grade) :
         lastName(last_Name), firstName(first_Name), course(_course), averageGrade(average_Grade), next(nullptr), prev(nullptr) {}
-    Student(Student& other) : lastName(other.lastName), firstName(other.firstName), course(other.course), averageGrade(other.averageGrade), next(nullptr), prev(nullptr) {}
+    Student(Student& other) : 
+        lastName(other.lastName), firstName(other.firstName), course(other.course), averageGrade(other.averageGrade), next(nullptr), prev(nullptr) {}
 };
 
 ostream& operator<<(ostream& stream, Student& current) {
