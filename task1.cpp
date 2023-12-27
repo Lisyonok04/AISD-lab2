@@ -13,12 +13,37 @@ struct Student {
         lastName(last_Name), firstName(first_Name), course(_course), averageGrade(average_Grade), next(nullptr), prev(nullptr) {}
     Student(Student& other) : 
         lastName(other.lastName), firstName(other.firstName), course(other.course), averageGrade(other.averageGrade), next(nullptr), prev(nullptr) {}
+public:
+    void set_prev(Student* student) {
+        prev = student;
+    }
+    void set_next(Student* student) {
+        next = student;
+    }
+    float get_averageGrade() {
+        return averageGrade;
+    }
+    string get_lastName() {
+        return lastName;
+    }
+    string get_firstName() {
+        return firstName;
+    }
+    Student* get_prev() {
+        return prev;
+    }
+    Student* get_next() {
+        return next;
+    }
+    int get_course() {
+        return course;
+    }
+    friend std::ostream& operator<<(std::ostream& stream, const Student& current) {
+        cout << "Last name: " << current.lastName << ", First name: " << current.firstName << ", Course: " << current.course << ", Average grade: " << current.averageGrade << endl;
+        return stream;
+    }
 };
 
-ostream& operator<<(ostream& stream, Student& current) {
-    cout << "Last name: " << current.lastName << ", First name: " << current.firstName << ", Course: " << current.course << ", Average grade: " << current.averageGrade << endl;
-    return stream;
-}
 
 class LinkedList {
 private:
@@ -30,16 +55,27 @@ public:
         return size;
     }
 
-    LinkedList() : size(0), head(nullptr), tail(nullptr) {}
-
-    ~LinkedList() {
-        while (head != tail) {
-            Student* cur = head;
-            head = head->prev;
-            delete cur;
-        }
-        delete tail;
+    Student* get_head() {
+        return head;
     }
+
+    Student* get_tail() {
+        return tail;
+    }
+
+    LinkedList() : size(0), head(nullptr), tail(nullptr) {}
+    LinkedList(const LinkedList& _list) {
+        head = nullptr;
+        tail = nullptr;
+        Student* cur = _list.head;
+        do {
+            Student* node = new Student(cur->lastName, cur->firstName, cur->course, cur->averageGrade);
+            push_tail(node);
+            cur = cur->next;
+        } while (cur != _list.head);
+    }
+
+    ~LinkedList() = default;
 
     void swap(LinkedList& _list) {
         std::swap(head, _list.head);
@@ -55,6 +91,9 @@ public:
         }
         else if (tail == NULL) {
             head = cur;
+            tail = cur;
+            tail->next = cur;
+            head->prev = cur;
         }
         cur->next = head;
         cur->prev = tail;
@@ -81,7 +120,10 @@ public:
             head->prev = cur;
         }
         else if (head == NULL) {
+            head = cur;
             tail = cur;
+            tail->next = cur;
+            head->prev = cur;
         }
         cur->next = head;
         cur->prev = tail;
@@ -126,30 +168,34 @@ public:
         size--;
     }
 
-
-    void deleteLowGrades() {
-        if (head == nullptr) {
-            return;
-        }
-        int cur_size = size;
-        Student* current = head;
-        do {
-            if (current->averageGrade < 3.0) {
-                Student* del = current;
-                current->prev->next = current->next;
-                current->next->prev = current->prev;
-                if (del == head) {
-                    head = del->next;
+    void delete_node(string last_Name, string first_Name, int _course, float average_Grade) {
+        if (head == NULL)
+            throw std::invalid_argument("LinkedList::The list is empty");
+        else {
+            Student* cur = head;
+            do {
+                if (last_Name == cur->lastName && first_Name == cur->firstName && _course == cur->course && average_Grade == cur->averageGrade) {
+                    if (cur == head) {
+                        cur = cur->next;
+                        this->pop_head();
+                    }
+                    else if (cur == tail) {
+                        cur = cur->next;
+                        this->pop_tail();
+                    }
+                    else {
+                        Student* ptr = cur;
+                        cur = cur->next;
+                        cur->prev = ptr->prev;
+                        ptr->prev->next = cur;
+                        delete ptr;
+                    }
                 }
-                current = current->next;
-                delete del;
-                size--;
-            }
-            else {
-                current = current->next;
-            }
-            cur_size--;
-        } while (cur_size != 0);
+                else {
+                    cur = cur->next;
+                }
+            } while (cur != head);
+        }
     }
 
     void displayStudents() {
@@ -165,3 +211,29 @@ public:
         } while (current != head);
     }
 };
+void deleteLowGrades(LinkedList& student) {
+    if (student.get_head() == nullptr) {
+        return;
+    }
+    int cur_size = student.get_size();
+    int size = student.get_size();
+    Student* current = student.get_head();
+    Student* head = student.get_head();
+    do {
+        if ((*current).get_averageGrade() < 3.0) {
+            Student* del = current;
+            current->get_prev()->set_next(current->get_next());
+            current->get_next()->set_prev(current->get_prev());
+            if (del == head) {
+                head = del->get_next();
+            }
+            current = current->get_next();
+            delete del;
+            size--;
+        }
+        else {
+            current = current->get_next();
+        }
+        cur_size--;
+    } while (cur_size != 0);
+}
